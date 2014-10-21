@@ -2,6 +2,7 @@ package models
 
 import scala.slick.driver.H2Driver.simple._
 import Database.threadLocalSession
+import play.Play
 
 trait DBSupport {
 
@@ -10,10 +11,9 @@ trait DBSupport {
 
   // DBへの接続を補助
   def connectDB[T](f: => T): T = {
-    Database.forURL("jdbc:h2:tcp://localhost:9093/db", driver = "org.h2.Driver", user = "sa") withSession {
+    Database.forURL(Play.application().configuration().getString("db.default.url"), driver = "org.h2.Driver", user = "sa") withSession {
       f
     }
   }
-
 
 }
