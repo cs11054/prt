@@ -1,22 +1,25 @@
 package models
 
-import scala.slick.driver.H2Driver.simple._
+//import scala.slick.driver.H2Driver.simple._
+import scala.slick.driver.PostgresDriver.simple._
 import Database.threadLocalSession
-import play.Play
 
 trait DBSupport {
-
-  val DB_PATH = Play.application().configuration().getString("db.default.url")
-  val DRIVER = if (DB_PATH.contains("localhost")) "org.h2.Driver" else "org.postgresql.Driver"
-  val USER = if (DB_PATH.contains("localhost")) "sa" else "zcgmsoybywazlx"
-  val PASS = if (DB_PATH.contains("localhost")) "" else "HQt5HBNiYxgDE4LdQ337Ry_urb"
 
   // ソートの逆順用
   def Desc[T: Ordering] = implicitly[Ordering[T]].reverse
 
+  val heroku = false
+
+  val DB_URL = if (!heroku) "jdbc:h2:tcp://localhost:9093/db"
+  else "postgres://zcgmsoybywazlx:HQt5HBNiYxgDE4LdQ337Ry_urb@ec2-54-83-204-78.compute-1.amazonaws.com:5432/dcn5isfl4oitng"
+  val DRIVER = if (!heroku) "org.h2.Driver" else "org.postgresql.Driver"
+  val USER = if (!heroku) "sa" else " 	zcgmsoybywazlx"
+  val PASS = if (!heroku) "" else "HQt5HBNiYxgDE4LdQ337Ry_urb"
+
   // DBへの接続を補助
   def connectDB[T](f: => T): T = {
-    Database.forURL(DB_PATH, driver = DRIVER, user = USER, password = PASS) withSession {
+    Database.forURL(DB_URL, driver = DRIVER, user = USER, password = PASS) withSession {
       f
     }
   }

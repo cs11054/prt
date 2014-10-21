@@ -123,7 +123,8 @@ object Application extends Controller with myAuth with Utilities {
       formWithErrors => BadRequest(views.html.login(formWithErrors)),
       user => {
         Console.println("login:" + user._1)
-        Redirect(routes.Application.index).withSession("user" -> user._1)
+        if (Users.isRegistered(user._1, user._2)) Redirect(routes.Application.index).withSession("user" -> user._1)
+        else BadRequest(views.html.login(loginForm))
       })
   }
 

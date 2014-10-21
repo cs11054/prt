@@ -37,11 +37,15 @@ object Users extends Table[User]("USER") with DBSupport with XMLConv {
   }
 
   def isRegistered(id: String, password: String): Boolean = connectDB {
+    Query(Users).list().exists(u => u.id == id && u.password == password)
+  }
+
+  def isRegisteredID(id: String, password: String): Boolean = connectDB {
     Query(Users).list().exists(u => u.id == id)
   }
 
   def add(id: String, password: String) = connectDB {
-    if (!isRegistered(id, password)) Users.ins.insert(id, password)
+    if (!isRegisteredID(id, password)) Users.ins.insert(id, password)
     else 0
   }
 
