@@ -9,7 +9,7 @@ trait DBSupport {
   // ソートの逆順用
   def Desc[T: Ordering] = implicitly[Ordering[T]].reverse
 
-  val heroku = false
+  val heroku = true
 
   val DB_URL = if (!heroku) "jdbc:h2:tcp://localhost:9093/db"
   else "postgres://zcgmsoybywazlx:HQt5HBNiYxgDE4LdQ337Ry_urb@ec2-54-83-204-78.compute-1.amazonaws.com:5432/dcn5isfl4oitng"
